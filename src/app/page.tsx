@@ -14,10 +14,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
-import { FileUp, Cpu, Loader2, FileText, CheckCircle2, Download, RefreshCcw, Settings2, Sparkles, AlertCircle, Wifi, WifiOff, Settings } from "lucide-react";
+import { FileUp, Cpu, Loader2, CheckCircle2, Download, RefreshCcw, Settings2, Sparkles, AlertCircle, Wifi, WifiOff, Settings } from "lucide-react";
 
 const ACCESS_PASSWORD = "admin123";
 const ACCESS_STORAGE_KEY = "monthly_summary_access_granted";
+const HEADER_LOGO_URL = "https://p.ipic.vip/lmzked.jpg";
 
 const AI_PROVIDERS = [
   { id: "openai", name: "OpenAI (国际版)", defaultBaseUrl: "https://api.openai.com/v1", defaultModel: "gpt-4o" },
@@ -426,9 +427,10 @@ export default function Home() {
       <header className="bg-white/90 backdrop-blur-xl border-b border-slate-200/60 sticky top-0 z-50 transition-all">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3 shrink-0">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-sm shadow-blue-500/20">
-              <FileText className="w-4 h-4 text-white" />
-            </div>
+            <div
+              className="w-8 h-8 rounded-xl overflow-hidden shadow-sm shadow-blue-500/20 bg-white border border-slate-200/70 bg-cover bg-center bg-no-repeat"
+              style={{ backgroundImage: `url(${HEADER_LOGO_URL})` }}
+            />
             <h1 className="text-[17px] font-bold tracking-tight text-slate-800 hidden sm:block">
               月度自评生成器
             </h1>

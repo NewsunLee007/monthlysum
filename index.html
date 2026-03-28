@@ -37,9 +37,6 @@
         box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
         padding: 28px;
       }
-      .card-wide {
-        max-width: 920px;
-      }
       h1 {
         margin: 0 0 8px;
         font-size: 26px;
@@ -80,9 +77,6 @@
         margin-top: 14px;
         cursor: pointer;
       }
-      .btn-secondary {
-        background: #334155;
-      }
       .message {
         margin-top: 12px;
         font-size: 13px;
@@ -108,26 +102,13 @@
       <button id="submit">进入系统</button>
       <div id="message" class="message"></div>
     </div>
-    <div id="system-view" class="card card-wide hidden">
-      <h1>月度自评生成器</h1>
-      <p>已通过密码验证，欢迎使用内部系统</p>
-      <div style="border:1px solid var(--border);border-radius:14px;padding:18px;background:#f8fafc;">
-        <div style="font-size:15px;font-weight:600;margin-bottom:8px;">主程序入口已开启</div>
-        <div style="font-size:14px;line-height:1.6;color:var(--muted);">
-          当前页面已完成登录切换。若需进入完整 Next.js 主程序，请使用支持 Next 服务端运行的部署环境。
-        </div>
-      </div>
-      <button id="logout" class="btn-secondary">退出登录</button>
-    </div>
     <script>
       const PASSWORD = "admin123";
       const STORAGE_KEY = "monthly_summary_access_granted";
+      const APP_URL = "https://web-app-eta-jade.vercel.app";
       const submit = document.getElementById("submit");
-      const logout = document.getElementById("logout");
       const password = document.getElementById("password");
       const message = document.getElementById("message");
-      const loginView = document.getElementById("login-view");
-      const systemView = document.getElementById("system-view");
 
       function setMessage(text, isError) {
         message.textContent = text;
@@ -136,8 +117,8 @@
 
       function enterSystem() {
         localStorage.setItem(STORAGE_KEY, "1");
-        loginView.classList.add("hidden");
-        systemView.classList.remove("hidden");
+        setMessage("验证成功，正在进入主程序…", false);
+        window.location.href = APP_URL;
       }
 
       if (localStorage.getItem(STORAGE_KEY) === "1") {
@@ -155,13 +136,6 @@
       submit.addEventListener("click", verify);
       password.addEventListener("keydown", (e) => {
         if (e.key === "Enter") verify();
-      });
-      logout.addEventListener("click", () => {
-        localStorage.removeItem(STORAGE_KEY);
-        systemView.classList.add("hidden");
-        loginView.classList.remove("hidden");
-        password.value = "";
-        setMessage("", true);
       });
     </script>
   </body>

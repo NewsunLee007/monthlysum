@@ -16,6 +16,9 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
 import { FileUp, Cpu, Loader2, FileText, CheckCircle2, Download, RefreshCcw, Settings2, Sparkles, AlertCircle, Wifi, WifiOff, Settings } from "lucide-react";
 
+const ACCESS_PASSWORD = "admin123";
+const ACCESS_STORAGE_KEY = "monthly_summary_access_granted";
+
 const AI_PROVIDERS = [
   { id: "openai", name: "OpenAI (国际版)", defaultBaseUrl: "https://api.openai.com/v1", defaultModel: "gpt-4o" },
   { id: "anthropic", name: "Anthropic (Claude)", defaultBaseUrl: "https://api.anthropic.com/v1", defaultModel: "claude-3-5-sonnet-20240620" },
@@ -43,6 +46,9 @@ export default function Home() {
   const [teacherClasses, setTeacherClasses] = useState("");
   const [generationLength, setGenerationLength] = useState("适中");
   const [mounted, setMounted] = useState(false);
+  const [accessPasswordInput, setAccessPasswordInput] = useState("");
+  const [isAccessGranted, setIsAccessGranted] = useState(false);
+  const [accessError, setAccessError] = useState<string | null>(null);
 
   // Load settings from localStorage on mount
   useEffect(() => {
@@ -71,6 +77,9 @@ export default function Home() {
     if (savedTeacherSubject) setTeacherSubject(savedTeacherSubject);
     if (savedTeacherGrade) setTeacherGrade(savedTeacherGrade);
     if (savedTeacherClasses) setTeacherClasses(savedTeacherClasses);
+    if (localStorage.getItem(ACCESS_STORAGE_KEY) === "1") {
+      setIsAccessGranted(true);
+    }
   }, []);
 
   // Save settings to localStorage
@@ -354,7 +363,62 @@ export default function Home() {
     }
   };
 
+  const handleAccessSubmit = () => {
+    if (accessPasswordInput === ACCESS_PASSWORD) {
+      setIsAccessGranted(true);
+      setAccessError(null);
+      localStorage.setItem(ACCESS_STORAGE_KEY, "1");
+      return;
+    }
+    setAccessError("密码错误，请重试");
+  };
+
   if (!mounted) return null;
+
+  if (!isAccessGranted) {
+    return (
+      <div className="min-h-screen bg-[#F9FAFB] font-sans text-slate-900 flex items-center justify-center p-6">
+        <Card className="w-full max-w-md border border-slate-200/70 shadow-xl shadow-slate-200/40 bg-white rounded-3xl overflow-hidden">
+          <CardContent className="p-8 space-y-6">
+            <div className="space-y-2 text-center">
+              <h2 className="text-2xl font-bold text-slate-800 tracking-tight">内部访问验证</h2>
+              <p className="text-sm text-slate-500">请输入访问密码后进入程序</p>
+            </div>
+            <div className="space-y-2.5">
+              <Label htmlFor="access-password" className="text-slate-700 font-semibold text-sm">访问密码</Label>
+              <Input
+                id="access-password"
+                type="password"
+                value={accessPasswordInput}
+                placeholder="请输入访问密码"
+                onChange={(e) => {
+                  setAccessPasswordInput(e.target.value);
+                  if (accessError) setAccessError(null);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    handleAccessSubmit();
+                  }
+                }}
+                className="h-11 border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 rounded-xl transition-all"
+              />
+            </div>
+            {accessError && (
+              <div className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-xl px-3 py-2">
+                {accessError}
+              </div>
+            )}
+            <Button
+              onClick={handleAccessSubmit}
+              className="w-full h-11 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold"
+            >
+              进入系统
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#F9FAFB] font-sans text-slate-900 pb-24 selection:bg-blue-200 selection:text-blue-900">
